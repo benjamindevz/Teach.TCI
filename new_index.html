@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCI.Teach - Benjamin's Game Hub</title>
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --secondary: #e74c3c;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ecf0f1;
+            --text-light: #bdc3c7;
+            --header-bg: #1a1a1a;
+            --border: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--header-bg);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .panic-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .panic-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            background: var(--card-bg);
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border);
+        }
+
+        .game-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-title {
+            font-size: 1rem;
+            margin-top: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+            
+            .panic-btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Benjamin's Game Hub</div>
+        <div class="tagline">Powered by TCI.Teach</div>
+        <a href="https://www.teachtci.com/" class="panic-btn" target="_blank">PANIC</a>
+    </header>
+
+    <div class="search-container">
+        <input type="text" class="search-box" id="searchBox" placeholder="Search games...">
+    </div>
+
+    <div class="games-grid" id="gamesGrid">
+        <!-- Games will be added here by JavaScript -->
+    </div>
+
+    <script>
+        // List of all games
+        const games = [
+            { name: '1v1 LOL', file: '1v1lol.html' },
+            { name: '2048', file: '2048.html' },
+            { name: '8 Ball Pool', file: '8ball.html' },
+            { name: 'A Dark Room', file: 'adarkroom.html' },
+            { name: 'Among Us', file: 'amongus.html' },
+            { name: 'Asteroids', file: 'asteroids.html' },
+            { name: 'Basketball Stars', file: 'basketballstars.html' },
+            { name: 'Bloons TD 4', file: 'bloonstd4.html' },
+            { name: 'Breakout', file: 'breakout.html' },
+            { name: 'Chess', file: 'chess.html' },
+            { name: 'Chrome Dino', file: 'chrome-dino.html' },
+            { name: 'Cookie Clicker', file: 'cookieclicker.html' },
+            { name: 'Crossy Road', file: 'crossyroad.html' },
+            { name: 'Cut the Rope', file: 'cuttherope.html' },
+            { name: 'Doodle Jump', file: 'doodle-jump.html' },
+            { name: 'Drift Boss', file: 'driftboss.html' },
+            { name: 'Duck Life', file: 'ducklife.html' },
+            { name: 'Fireboy & Watergirl', file: 'fireboy-and-watergirl-1.html' },
+            { name: 'Flappy Bird', file: 'flappybird.html' },
+            { name: 'Geometry Dash', file: 'geometrydash.html' },
+            { name: 'Minecraft', file: 'mc1.5.2.html' },
+            { name: 'Pac-Man', file: 'pacman.html' },
+            { name: 'Paper.io', file: 'paperio.html' },
+            { name: 'Particle Clicker', file: 'particleclicker.html' },
+            { name: 'Retro Bowl', file: 'retrobowl.html' },
+            { name: 'Slope', file: 'slope.html' },
+            { name: 'Snake', file: 'snake.html' },
+            { name: 'Space Invaders', file: 'spaceinvaders.html' },
+            { name: 'Subway Surfers', file: 'subway-surfers.html' },
+            { name: 'Tetris', file: 'tetris.html' },
+            { name: 'Vex 3', file: 'vex3.html' },
+            { name: 'Vex 4', file: 'vex4.html' },
+            { name: 'Vex 5', file: 'vex5.html' },
+            { name: 'Vex 6', file: 'vex6.html' }
+        ];
+
+        // Function to display games
+        function displayGames(gamesToShow) {
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesGrid.innerHTML = '';
+
+            gamesToShow.forEach(game => {
+                const gameCard = document.createElement('a');
+                gameCard.href = game.file;
+                gameCard.className = 'game-card';
+                gameCard.innerHTML = `
+                    <div class="game-title">${game.name}</div>
+                `;
+                gamesGrid.appendChild(gameCard);
+            });
+        }
+
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredGames = games.filter(game => 
+                game.name.toLowerCase().includes(searchTerm)
+            );
+            displayGames(filteredGames.length > 0 ? filteredGames : games);
+        });
+
+        // Initial display
+        displayGames(games);
+    </script>
+</body>
+</html>

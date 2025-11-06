@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCI</title>
+    <link rel="icon" href="https://www.teachtci.com/wp-content/uploads/2020/07/cropped-logo_TCI.jpg" type="image/jpg" sizes="32x32">
+    <link rel="shortcut icon" href="https://www.teachtci.com/wp-content/uploads/2020/07/cropped-logo_TCI.jpg" type="image/jpg">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --secondary: #e74c3c;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ecf0f1;
+            --text-light: #bdc3c7;
+            --header-bg: #1a1a1a;
+            --border: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--header-bg);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .panic-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .panic-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .category-btn {
+            background: white;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .game-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+            transition: all 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+        
+        .loading, .error {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+
+        .game-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .game-category {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background: #2c3e50;
+            padding: 4px 12px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .featured {
+            grid-column: span 2;
+        }
+
+        .featured .game-image {
+            height: 200px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .featured {
+                grid-column: span 1;
+            }
+            
+            .featured .game-image {
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Benjamin's Game Hub</div>
+        <div class="tagline">Powered by TCI.Teach</div>
+        <a href="https://www.teachtci.com/" class="panic-btn" target="_blank">PANIC</a>
+    </header>
+
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="Search games...">
+    </div>
+
+    <div class="categories">
+        <button class="category-btn active">All Games</button>
+        <button class="category-btn">Action</button>
+        <button class="category-btn">Puzzle</button>
+        <button class="category-btn">Adventure</button>
+        <button class="category-btn">Sports</button>
+        <button class="category-btn">Strategy</button>
+        <button class="category-btn">Classic</button>
+    </div>
+
+    <div class="games-grid" id="gamesGrid">
+        <!-- Games will be dynamically loaded here -->
+    </div>
+
+    <footer class="footer">
+        <p>© 2025 HTML5 Games - All games are free to play online</p>
+    </footer>
+
+    <script>
+        // Sample game data - you can expand this with more games
+        const games = [
+            { 
+                title: '1v1 LOL', 
+                path: '1v1lol/index.html', 
+                category: 'Action',
+                featured: true
+            },
+            { 
+                title: '2048', 
+                path: '2048/index.html', 
+                category: 'Puzzle'
+            },
+            { 
+                title: '8 Ball Pool', 
+                path: '8ball/index.html', 
+                category: 'Sports'
+            },
+            { 
+                title: 'Among Us', 
+                path: 'amongus/index.html', 
+                category: 'Strategy',
+                featured: true
+            },
+            { 
+                title: 'Asteroids', 
+                path: 'asteroids/index.html', 
+                category: 'Classic'
+            },
+            { 
+                title: 'Basketball Stars', 
+                path: 'basketballstars/index.html', 
+                category: 'Sports'
+            },
+            { 
+                title: 'Chess', 
+                path: 'chess/index.html', 
+                category: 'Strategy'
+            },
+            { 
+                title: 'Cookie Clicker', 
+                path: 'cookieclicker/index.html', 
+                category: 'Puzzle',
+                featured: true
+            },
+            { 
+                title: 'Crossy Road', 
+                path: 'crossyroad/index.html', 
+                category: 'Adventure'
+            },
+            { 
+                title: 'Doodle Jump', 
+                path: 'doodle-jump/index.html', 
+                category: 'Action'
+            },
+            { 
+                title: 'Fireboy & Watergirl', 
+                path: 'fireboy-and-watergirl-1/index.html', 
+                category: 'Puzzle',
+                featured: true
+            },
+            { 
+                title: 'Flappy Bird', 
+                path: 'flappybird/index.html', 
+                category: 'Action'
+            },
+            { 
+                title: 'Geometry Dash', 
+                path: 'geometrydash/index.html', 
+                category: 'Action'
+            },
+            { 
+                title: 'Minecraft Classic', 
+                path: 'minecraft/index.html', 
+                category: 'Adventure',
+                featured: true
+            },
+            { 
+                title: 'Pac-Man', 
+                path: 'pacman/index.html', 
+                category: 'Classic'
+            },
+            { 
+                title: 'Slope', 
+                path: 'slope/index.html', 
+                category: 'Action'
+            },
+            { 
+                title: 'Snake', 
+                path: 'snake/index.html', 
+                category: 'Classic'
+            },
+            { 
+                title: 'Space Invaders', 
+                path: 'spaceinvaders/index.html', 
+                category: 'Classic'
+            },
+            { 
+                title: 'Subway Surfers', 
+                path: 'subway-surfers/index.html', 
+                category: 'Adventure',
+                featured: true
+            },
+            { 
+                title: 'Tetris', 
+                path: 'tetris/index.html', 
+                category: 'Puzzle'
+            }
+        ];
+
+        // Function to check if an image exists
+        async function imageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+            });
+        }
+
+        // Function to get game name for display
+        function getGameDisplayName(gamePath) {
+            const name = gamePath.split('/')[0];
+            // Convert kebab-case to Title Case
+            return name
+                .split('-')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        // Function to create game cards
+        async function createGameCards() {
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesGrid.innerHTML = '<div class="loading">Loading games...</div>';
+            
+            const gameCards = [];
+            
+            // Process each game to get its image
+            for (const game of games) {
+                const gameCard = document.createElement('a');
+                gameCard.href = game.path;
+                gameCard.className = `game-card ${game.featured ? 'featured' : ''}`;
+                
+                const displayName = getGameDisplayName(game.path);
+                gameCard.innerHTML = `
+                    <div class="game-info">
+                        <h3 class="game-title">${displayName}</h3>
+                        <span class="game-category">${game.category}</span>
+                    </div>
+                `;
+                
+                gameCards.push(gameCard);
+            }
+            
+            // Clear loading message and add all game cards
+            gamesGrid.innerHTML = '';
+            gameCards.forEach(card => gamesGrid.appendChild(card));
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Show loading state
+            document.getElementById('gamesGrid').innerHTML = '<div class="loading">Loading games...</div>';
+            
+            try {
+                await createGameCards();
+            } catch (error) {
+                console.error('Error loading games:', error);
+                document.getElementById('gamesGrid').innerHTML = '<div class="error">Failed to load games. Please try again later.</div>';
+            }
+            
+            // Search functionality
+            const searchBox = document.querySelector('.search-box');
+            searchBox.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const gameCards = document.querySelectorAll('.game-card');
+                
+                gameCards.forEach(card => {
+                    const title = card.querySelector('.game-title').textContent.toLowerCase();
+                    if (title.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Category filter
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    const category = button.textContent;
+                    const gameCards = document.querySelectorAll('.game-card');
+                    
+                    gameCards.forEach(card => {
+                        const cardCategory = card.querySelector('.game-category').textContent;
+                        if (category === 'All Games' || cardCategory === category) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
